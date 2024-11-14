@@ -1,0 +1,29 @@
+services:
+    web:
+        build: ./build  # Use a Dockerfile located in the ./build directory to build the 'web' service
+
+        volumes:
+            - ./build/source-code:/var/www/html     # Mount the 'source-code' dir to /var/www/html in the container
+            - userdata:/root   # Mount the 'userdata' volume to /root in the container
+        ports:
+            - "80:80" # Map host port 80 to container port 80
+        hostname: arena-admin
+    mysql:
+        image: mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: example
+        volumes:
+            - mysql_data:/var/lib/mysql
+            - ./build/sql:/docker-entrypoint-initdb.d
+        ports:
+            - "3306:3306"
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+# Define named volumes
+volumes: 
+    userdata:
+    mysql_data:
